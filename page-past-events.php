@@ -45,13 +45,14 @@ get_header(); ?>
             </div>
           </div>
 
-
+<hr class="section-break">
 
 <?php }; 
 echo paginate_links(array(
     'total' => $pastEvents->max_num_pages
 )); 
 ?>
+
 </div>
 
 <?php get_footer();
