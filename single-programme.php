@@ -26,7 +26,7 @@ while (have_posts()){
 
         <?php
         $relatedProfessors = new WP_Query(array(
-            'posts_per_page' => '-1',
+            'posts_per_page' => -1,
             'post_type' => 'professor',
             'orderby' => 'title',
             'order' => 'ASC',
@@ -41,22 +41,29 @@ while (have_posts()){
 
           if($relatedProfessors->have_posts()){
           echo '<hr class="section-break">';
-          echo '<h2 class="headline headline--medium"> '.get_the_title().' Professor(s)
-          </h2>'
-          ;
+          echo '<h2 class="headline headline--medium"> '.get_the_title().' Professor(s)</h2>';
+          
           while($relatedProfessors->have_posts()){
-            $relatedProfessors->the_post(); 
-          }; ?>
+            $relatedProfessors->the_post(); ?>
+            <li class="professor-card__list-item">
+              <a class="professor-card" href="<?php the_permalink(); ?>">
+              <img class="professor-card__image" src="<?php the_post_thumbnail_url('professorLandscape'); ?>">
+              <span class="professor-card__name"><?php the_title(); ?></span>
+          </a>
+          </li>
+
+            </li>
           <li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
           
-          <?php };
+          <?php }
+          echo '</ul>';
+              }
           
 wp_reset_postdata();
-?>
-        <?php 
+
           $today = date('Ymd');
           $homepageEvents = new WP_Query(array(
-            'posts_per_page' => 2,
+            'posts_per_page' => -1,
             'post_type' => 'event',
             'meta_key' => 'event_date',
             'orderby' => 'meta_value_num',
@@ -78,12 +85,10 @@ wp_reset_postdata();
 
           if($homepageEvents->have_posts()){
           echo '<hr class="section-break">';
-          echo '<h2 class="headline headline--medium"> Upcoming '.get_the_title().' Events
-          </h2>'
-          ;
+          echo '<h2 class="headline headline--medium"> Upcoming '.get_the_title().' Events</h2>';
+              
           while($homepageEvents->have_posts()){
-            $homepageEvents->the_post(); 
-          }; ?>
+            $homepageEvents->the_post(); ?>
           <div class="event-summary">
             <a class="event-summary__date t-center" href="<?php the_permalink(); ?>">
               <span class="event-summary__month"><?php $eventDate = new DateTime(get_field('event_date'));
@@ -108,7 +113,10 @@ wp_reset_postdata();
     <?php
 };
 };
+?>
+    </div>
 
+    <?php };
 get_footer();
 ?>
-</div>
+
