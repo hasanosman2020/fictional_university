@@ -2,18 +2,12 @@
 get_header();
 while (have_posts()){
     the_post();
+    pageBanner(array(
+      'title' => 'Hello user, this is the title of the About Us page.',
+      'subtitle' => 'Hello again, this is the subtitle of the About Us page.',
+      'photo' => 'https://www.pexels.com/photo/architectural-photography-of-brown-and-gray-house-2566121/'
+    ));
     ?>
-    
-    <div class="page-banner">
-      <div class="page-banner__bg-image" style="background-image: url(<?php echo get_theme_file_uri('/images/ocean.jpg'); ?>)"></div>
-      <div class="page-banner__content container container--narrow">
-        <h1 class="page-banner__title"><?php the_title(); ?></h1>
-        <div class="page-banner__intro">
-          <p>NOTE: Amend section as usual.</p>
-        </div>
-      </div>
-    </div>
-
     <div class="container container--narrow page-section">
         <?php 
         $theParent = wp_get_post_parent_id(get_the_ID());
