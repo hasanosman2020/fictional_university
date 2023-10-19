@@ -13,9 +13,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_MobileMenu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/MobileMenu */ "./src/modules/MobileMenu.js");
 /* harmony import */ var _modules_HeroSlider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/HeroSlider */ "./src/modules/HeroSlider.js");
 /* harmony import */ var _modules_GoogleMap__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/GoogleMap */ "./src/modules/GoogleMap.js");
+/* harmony import */ var _modules_Search__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/Search */ "./src/modules/Search.js");
 
 
 // Our modules / classes
+
 
 
 
@@ -24,6 +26,10 @@ __webpack_require__.r(__webpack_exports__);
 const mobileMenu = new _modules_MobileMenu__WEBPACK_IMPORTED_MODULE_1__["default"]();
 const heroSlider = new _modules_HeroSlider__WEBPACK_IMPORTED_MODULE_2__["default"]();
 const googleMap = new _modules_GoogleMap__WEBPACK_IMPORTED_MODULE_3__["default"]();
+const search = new _modules_Search__WEBPACK_IMPORTED_MODULE_4__["default"]();
+
+//Allow new JS and CSS to load in browser without a traditional page refresh
+if (false) {}
 
 /***/ }),
 
@@ -168,6 +174,38 @@ class MobileMenu {
   }
 }
 /* harmony default export */ __webpack_exports__["default"] = (MobileMenu);
+
+/***/ }),
+
+/***/ "./src/modules/Search.js":
+/*!*******************************!*\
+  !*** ./src/modules/Search.js ***!
+  \*******************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+class Search {
+  //1. describe and create/initiate our object
+  constructor() {
+    this.openButton = document.querySelectorAll(".js-search-trigger");
+    this.closeButton = document.querySelector(".search-overlay__close");
+    this.searchOverlay = document.querySelector(".search-overlay");
+    this.events();
+  }
+  events() {
+    this.openButton[0].addEventListener("click", this.openOverlay.bind(this));
+    this.openButton[1].addEventListener("click", this.openOverlay.bind(this));
+    this.closeButton.addEventListener("click", this.closeOverlay.bind(this));
+  }
+  //3. methods (function, action...)
+  openOverlay() {
+    this.searchOverlay.classList.add("search-overlay--active");
+  }
+  closeOverlay() {
+    this.searchOverlay.classList.remove("search-overlay--active");
+  }
+}
+/* harmony default export */ __webpack_exports__["default"] = (Search);
 
 /***/ }),
 
