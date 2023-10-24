@@ -8,6 +8,7 @@ get_header();
         <h2 class="headline headline--medium">We think you&rsquo;ll like it here.</h2>
         <h3 class="headline headline--small">Why don&rsquo;t you check out the <strong>major</strong> you&rsquo;re interested in?</h3>
         <a href="<?php echo get_post_type_archive_link('programme'); ?>" class="btn btn--large btn--blue">Find Your Major</a>
+        <!--<input type="text" name="search" placeholder="What are you looking for?" />-->
       </div>
     </div>
 
