@@ -1,3 +1,4 @@
+import $ from 'jquery';
 class Search{
     //1. describe and create/initiate our object
     constructor(){
@@ -11,6 +12,8 @@ class Search{
         this.resultsDiv = document.querySelector("#search-overlay__results");
         this.isSpinnerVisible = false;
         this.previousValue;
+        this.getResults();
+
 
 
 
@@ -46,9 +49,13 @@ typingLogic(){
 }
 
 getResults(){
-    this.resultsDiv.innerHTML = "Imagine real search results here...";
-this.isSpinnerVisible = false;
+    /*this.resultsDiv.innerHTML = "Imagine real search results here...";
+this.isSpinnerVisible = false;*/
+$.getJSON("http://fictional-university.local/wp-json/wp/v2/posts?search=" + this.searchTerm.value, function (posts){
+    alert(posts[1].title.rendered)
+})
 }
+
 
 keyPressHandler(e){
     //console.log(e.keyCode);

@@ -184,6 +184,9 @@ class MobileMenu {
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "jquery");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+
 class Search {
   //1. describe and create/initiate our object
   constructor() {
@@ -197,6 +200,7 @@ class Search {
     this.resultsDiv = document.querySelector("#search-overlay__results");
     this.isSpinnerVisible = false;
     this.previousValue;
+    this.getResults();
   }
   events() {
     this.openButton[0].addEventListener("click", this.openOverlay.bind(this));
@@ -224,8 +228,11 @@ class Search {
     this.previousValue = this.searchTerm.value;
   }
   getResults() {
-    this.resultsDiv.innerHTML = "Imagine real search results here...";
-    this.isSpinnerVisible = false;
+    /*this.resultsDiv.innerHTML = "Imagine real search results here...";
+    this.isSpinnerVisible = false;*/
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().getJSON("http://fictional-university.local/wp-json/wp/v2/posts?search=" + this.searchTerm.value, function (posts) {
+      alert(posts[1].title.rendered);
+    });
   }
   keyPressHandler(e) {
     //console.log(e.keyCode);
@@ -262,6 +269,16 @@ class Search {
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
+
+/***/ }),
+
+/***/ "jquery":
+/*!*************************!*\
+  !*** external "jQuery" ***!
+  \*************************/
+/***/ (function(module) {
+
+module.exports = window["jQuery"];
 
 /***/ }),
 
@@ -4216,6 +4233,18 @@ var Glide = /*#__PURE__*/function (_Core) {
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function() { return module['default']; } :
+/******/ 				function() { return module; };
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
 /******/ 		};
 /******/ 	}();
 /******/ 	

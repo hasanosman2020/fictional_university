@@ -91,3 +91,10 @@ function universityMapKey($api){
 }
 
 add_filter('acf/fields/google_map/api', 'universityMapKey');
+
+function load_scripts(){
+    //load scripts
+wp_enqueue_script('jquery'); # Loading the wp bundled jQuery version
+}
+
+add_action('wp_enqueue_scripts', 'load_scripts');
