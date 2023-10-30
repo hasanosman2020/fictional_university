@@ -51,12 +51,19 @@ typingLogic(){
 getResults(){
     /*this.resultsDiv.innerHTML = "Imagine real search results here...";
 this.isSpinnerVisible = false;*/
-$.getJSON("http://fictional-university.local/wp-json/wp/v2/posts?search=" + this.searchTerm.value, function (posts){
-    alert(posts[1].title.rendered)
-})
+$.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchTerm.value, posts => {
+    this.resultsDiv.innerHTML = `<h2>General Information</h2>
+
+    ${posts.length ? '<ul class="link-list minn-list"></ul>' : '<p>There are no matches found for this search.</p>'
 }
-
-
+    ${posts.map(item =>`<li><a href="${item.link}">${item.title.rendered}
+    </a>
+    </li>`).join('')
+}
+   ${posts.length ? '</ul>' : '' }
+   `}
+);
+}
 keyPressHandler(e){
     //console.log(e.keyCode);
     if(e.keyCode == 83 && !this.isOverlayOpen && document.activeElement.tagName != 'INPUT'){
@@ -80,6 +87,5 @@ closeOverlay(){
     console.log("close method just ran");
     this.isOverlayOpen = false;
 }    
-    
 }
 export default Search

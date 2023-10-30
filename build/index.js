@@ -230,8 +230,15 @@ class Search {
   getResults() {
     /*this.resultsDiv.innerHTML = "Imagine real search results here...";
     this.isSpinnerVisible = false;*/
-    jquery__WEBPACK_IMPORTED_MODULE_0___default().getJSON("http://fictional-university.local/wp-json/wp/v2/posts?search=" + this.searchTerm.value, function (posts) {
-      alert(posts[1].title.rendered);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchTerm.value, posts => {
+      this.resultsDiv.innerHTML = `<h2>General Information</h2>
+
+    ${posts.length ? '<ul class="link-list minn-list"></ul>' : '<p>There are no matches found for this search.</p>'}
+    ${posts.map(item => `<li><a href="${item.link}">${item.title.rendered}
+    </a>
+    </li>`).join('')}
+   ${posts.length ? '</ul>' : ''}
+   `;
     });
   }
   keyPressHandler(e) {
