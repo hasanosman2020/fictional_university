@@ -190,6 +190,7 @@ __webpack_require__.r(__webpack_exports__);
 class Search {
   //1. describe and create/initiate our object
   constructor() {
+    this.addSearchHTML();
     this.openButton = document.querySelectorAll(".js-search-trigger");
     this.closeButton = document.querySelector(".search-overlay__close");
     this.searchOverlay = document.querySelector(".search-overlay");
@@ -219,7 +220,7 @@ class Search {
           this.resultsDiv.innerHTML = '<div class="spinner-loader"></div>';
           this.isSpinnerVisible = true;
         }
-        this.typingTimer = setTimeout(this.getResults.bind(this), 2000);
+        this.typingTimer = setTimeout(this.getResults.bind(this), 750);
       } else {
         this.resultsDiv.innerHTML = '';
         this.isSpinnerVisible = false;
@@ -253,6 +254,8 @@ class Search {
   openOverlay() {
     this.searchOverlay.classList.add("search-overlay--active");
     document.body.classList.add("body-no-scroll");
+    this.searchTerm.value = '';
+    setTimeout(() => this.searchTerm.focus(), 301);
     console.log("open method just ran");
     this.isOverlayOpen = true;
   }
@@ -261,6 +264,20 @@ class Search {
     document.body.classList.remove("body-no-scroll");
     console.log("close method just ran");
     this.isOverlayOpen = false;
+  }
+  addSearchHTML() {
+    document.body.insertAdjacentHTML('beforeend', `<div class="search-overlay">
+    <div class="search-overly__top">
+<div class="container">
+<i class="fa fa-search search-overlay__icon" aria-hidden="true"></i>
+<input type="text" class="search-term" placeholder="What are you looking for?" id="search-term" style="margin-top: 4rem;">
+<i class="fa fa-window-close search-overlay__close" aria-hidden="true"></i>
+</div>
+    </div>
+    <div class="container">
+      <div id="search-overlay__results"></div>
+    </div>
+  </div>`);
   }
 }
 /* harmony default export */ __webpack_exports__["default"] = (Search);
