@@ -237,7 +237,7 @@ class Search {
 
     ${combinedResults.length ? '<ul class="link-list minn-list"></ul>' : '<p>There are no matches found for this search.</p>'}
     ${combinedResults.map(item => `<li><a href="${item.link}">${item.title.rendered}
-    </a>
+    </a> ${item.type == 'post' ? `by ${item.authorName}` : ' '};
     </li>`).join('')}
    ${combinedResults.length ? '</ul>' : ''}
    `;
