@@ -46,8 +46,75 @@ typingLogic(){
 }
 
 getResults(){
+    $.getJSON(universityData.root_url + '/wp-json/university/v1/search?term=' + this.searchTerm.value, results => {
+        this.resultsDiv.innerHTML = 
+        `<div class="row">
+        <div class="one-third">
+        <h2 class="search-overlay__section-title">General Information</h2>
+        ${results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>There are no matches found for this search.</p>'
+}
+    ${results.generalInfo.map(item =>`<li><a href="${item.permalink}">${item.title}
+    </a> ${item.postType == 'post' ? `by ${item.authorName}` : ' '};
+    </li>`).join('')
+}
+   ${results.generalInfo.length ? '</ul>' : '' }
+        </div>
+        <div class="one-third">
+        <h2 class="search-overlay__section-title">Programmes</h2>
+        ${results.programmes.length ? '<ul class="link-list min-list">' : `<p>There are no programmes found for this search. <a href="${universityData.root_url}/programmes">View all programmes</a></p>`
+}
+    ${results.programmes.map(item =>`<li><a href="${item.permalink}">${item.title}
+    </a> 
+    </li>`).join('')
+}
+   ${results.programmes.length ? '</ul>' : '' }
+        
+        <h2 class="search-overlay__section-title">Professors</h2>
+        ${results.professors.length ? '<ul class="professor-cards">' : '<p>There are no professors found for this search.</p>'
+}
+    ${results.professors.map(item =>`<li class="professor-card__list-item">
+    <a class="professor-card" href="${item.permalink}">
+    <img class="professor-card__image" src="${item.image}">
+    <span class="professor-card__name">${item.title}</span>
+</a>
+</li>
+
+  </li>
+<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>`).join('')
+}
+   ${results.professors.length ? '</ul>' : '' }
+        </div>
+        <div class="one-third">
+        <h2 class="search-overlay__section-title">Campuses</h2>
+        ${results.campuses.length ? '<ul class="link-list min-list">' : `<p>There are no campuses found for this search. <a href="${universityData.root_url}/campuses">View all campuses.</a></p>`
+}
+    ${results.campuses.map(item =>`<li><a href="${item.permalink}">${item.title}
+    </a> 
+    </li>`).join('')
+}
+   ${results.campuses.length ? '</ul>' : '' }
+        <h2 class="search-overlay__section-title">Events</h2>
+        </div>
+        </div>`
+
+    });
+this.isSpinnerVisible = false;
+
+};
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /*this.resultsDiv.innerHTML = "Imagine real search results here...";
 this.isSpinnerVisible = false;*/
+
+/*Initial built-in default wp API URL
 $.when(
     $.getJSON(universityData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchTerm.value),
     $.getJSON(universityData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchTerm.value)
@@ -56,7 +123,7 @@ $.when(
     
     this.resultsDiv.innerHTML = `<h2>General Information</h2>
 
-    ${combinedResults.length ? '<ul class="link-list minn-list"></ul>' : '<p>There are no matches found for this search.</p>'
+    ${combinedResults.length ? '<ul class="link-list min-list"></ul>' : '<p>There are no matches found for this search.</p>'
 }
     ${combinedResults.map(item =>`<li><a href="${item.link}">${item.title.rendered}
     </a> ${item.type == 'post' ? `by ${item.authorName}` : ' '};
@@ -70,7 +137,7 @@ $.when(
    )
    this.isSpinnerVisible = false
 }
-
+*/
 keyPressHandler(e){
     //console.log(e.keyCode);
     if(e.keyCode == 83 && !this.isOverlayOpen && document.activeElement.tagName != 'INPUT'){
