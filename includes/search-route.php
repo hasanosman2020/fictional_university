@@ -1,4 +1,7 @@
 <?php
+
+add_action('rest_api_init', 'universityRegisterSearch');
+
 function universityRegisterSearch(){
     register_rest_route('university/v1', 'search', array(
         'methods' => WP_REST_SERVER::READABLE,
@@ -43,13 +46,14 @@ function universitySearchResults(){
                 'permalink' => get_the_permalink(),
             ));
         };
+        
         if(get_post_type() == 'event'){
             $eventDate = new DateTime(get_field('event_date'));
             $description = null;
 if(has_excerpt()){
     $description = get_the_excerpt();
 } else {
-    $description = wp_trim_words(get_the_content(), 18);}}
+    $description = wp_trim_words(get_the_content(), 18);}
             array_push($results['events'], array(
                 'title' => get_the_title(),
                 'permalink' => get_the_permalink(),
@@ -67,8 +71,4 @@ if(has_excerpt()){
 
     
     return $results;
-    };
-
-add_action('rest_api_init', 'universityRegisterSearch');
-
-?>
+}};
