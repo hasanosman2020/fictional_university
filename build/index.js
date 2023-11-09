@@ -236,7 +236,7 @@ class Search {
         ${results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>There are no matches found for this search.</p>'}
     ${results.generalInfo.map(item => `<li><a href="${item.permalink}">${item.title}
     </a> ${item.postType == 'post' ? `by ${item.authorName}` : ' '};
-    </li>`).join('')}
+     </li>`).join('')}
    ${results.generalInfo.length ? '</ul>' : ''}
         </div>
         <div class="one-third">

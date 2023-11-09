@@ -8,12 +8,13 @@ function universityRegisterSearch(){
         'callback' => 'universitySearchResults'
     ));
 };
-function universitySearchResults(){
+function universitySearchResults($_data){
     //return 'Congrats, you created a route.';
     $mainQuery = new WP_QUERY(array(
-        'post_type' => array('post', 'page','professor', 'programme', 'event', 'campus'),
-        's' => sanitize_text_field($_GET['term']
-        )
+        'post_type' => array('post', 'page', 'professor', 'programme', 'event', 'campus'),
+        's' => sanitize_text_field($_data['term']),
+        'posts_per_page' => -1
+        
     ));
     $results = array(
         'generalInfo' => array(),
@@ -25,7 +26,7 @@ function universitySearchResults(){
     while($mainQuery->have_posts()){
         $mainQuery->the_post();
 
-        if(get_post_type() == 'post' OR get_post_type() == 'page'){
+        if(get_post_type() == 'post' || get_post_type() == 'page'){
             array_push($results['generalInfo'], array(
                 'title' => get_the_title(),
                 'permalink' => get_the_permalink(),
@@ -68,7 +69,7 @@ if(has_excerpt()){
                 'permalink' => get_the_permalink()
             ));
         };
-
+    }
     
     return $results;
-}};
+};

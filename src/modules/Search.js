@@ -55,7 +55,7 @@ getResults(){
 }
     ${results.generalInfo.map(item =>`<li><a href="${item.permalink}">${item.title}
     </a> ${item.postType == 'post' ? `by ${item.authorName}` : ' '};
-    </li>`).join('')
+     </li>`).join('')
 }
    ${results.generalInfo.length ? '</ul>' : '' }
         </div>
