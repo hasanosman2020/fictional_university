@@ -235,7 +235,7 @@ class Search {
         <h2 class="search-overlay__section-title">General Information</h2>
         ${results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>There are no matches found for this search.</p>'}
     ${results.generalInfo.map(item => `<li><a href="${item.permalink}">${item.title}
-    </a> ${item.postType == 'post' ? `by ${item.authorName}` : ' '};
+    </a> ${item.postType == 'post' ? `by ${item.authorName}` : ' '}
      </li>`).join('')}
    ${results.generalInfo.length ? '</ul>' : ''}
         </div>
@@ -245,10 +245,10 @@ class Search {
     ${results.programmes.map(item => `<li><a href="${item.permalink}">${item.title}
     </a> 
     </li>`).join('')}
-   ${results.programmes.length ? '</ul>' : ''}
+   ${results.programmes.length ? "</ul>" : ""}
         
         <h2 class="search-overlay__section-title">Professors</h2>
-        ${results.professors.length ? '<ul class="professor-cards">' : '<p>There are no professors found for this search.</p>'}
+        ${results.professors.length ? '<ul class="professor-cards">' : `<p>There are no professors found for this search.</p>`}
     ${results.professors.map(item => `<li class="professor-card__list-item">
     <a class="professor-card" href="${item.permalink}">
     <img class="professor-card__image" src="${item.image}">
@@ -279,7 +279,7 @@ class Search {
               
             </div>
           </div>
-    `).join('')}
+    `).join('')};
         </div>
         </div>`;
     });
@@ -317,9 +317,11 @@ class Search {
     if (e.keyCode == 83 && !this.isOverlayOpen && document.activeElement.tagName != 'INPUT') {
       this.openOverlay();
     }
+    ;
     if (e.keyCode == 27 && this.isOverlayOpen) {
       this.closeOverlay();
     }
+    ;
   }
   openOverlay() {
     this.searchOverlay.classList.add("search-overlay--active");
@@ -337,7 +339,7 @@ class Search {
   }
   addSearchHTML() {
     document.body.insertAdjacentHTML('beforeend', `<div class="search-overlay">
-    <div class="search-overly__top">
+    <div class="search-overlay__top">
 <div class="container">
 <i class="fa fa-search search-overlay__icon" aria-hidden="true"></i>
 <input type="text" class="search-term" placeholder="What are you looking for?" id="search-term" style="margin-top: 4rem;">

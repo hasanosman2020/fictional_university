@@ -5,7 +5,7 @@ while (have_posts()){
     pageBanner(array(
       'title' => 'Hello user, this is the title of the About Us page.',
       'subtitle' => 'Hello again, this is the subtitle of the About Us page.',
-      'photo' => 'https://www.pexels.com/photo/architectural-photography-of-brown-and-gray-house-2566121/'
+      'photo' => 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?dpr=16auto=format&fit=crop&w=1500&h=1000&q=80&cs=tinysrgb&crop=' 
     ));
     ?>
     <div class="container container--narrow page-section">

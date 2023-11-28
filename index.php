@@ -18,7 +18,7 @@ pageBanner(array(
           </div>
           <div class='generic-content'>
             <?php the_excerpt(); ?>
-            <p><a class='btn btn--blue href="<?php the_permalink(); ?>"'>Continue Reading</a></p>
+            <p><a class='btn btn--blue' href="<?php the_permalink(); ?>">Continue Reading</a></p>
           </div>
         </div>
 
