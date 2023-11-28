@@ -42,6 +42,17 @@ function universitySearchResults($data){
             ));
         };
         if(get_post_type() == 'programme'){
+            $relatedCampuses = get_field('related_campus');
+
+            if($relatedCampuses){
+                foreach($relatedCampuses as $campus){
+                    array_push($results['campuses'], array(
+                        'title' => get_the_title($campus),
+                        'permalink' => get_the_permalink($campus)
+                    ));
+                }
+            }
+
             array_push($results['programmes'], array(
                 'title' => get_the_title(),
                 'permalink' => get_the_permalink(),
@@ -100,7 +111,7 @@ foreach($results['programmes'] as $item){
 };
 
     $programmeRelationshipQuery = new WP_Query(array(
-        'post_type' => 'professor',
+        'post_type' => array('professor', 'event'),
         'meta_query' => $programmesMetaQuery
     ));
         /*array(
@@ -116,6 +127,24 @@ foreach($results['programmes'] as $item){
     while($programmeRelationshipQuery->have_posts()){
         $programmeRelationshipQuery->the_post();
 
+        if(get_post_type() == 'event'){
+            $eventDate = new DateTime(get_field('event_date'));
+            $description = null;
+if(has_excerpt()){
+    $description = get_the_excerpt();
+} else {
+    $description = wp_trim_words(get_the_content(), 18);
+
+        }
+            array_push($results['events'], array(
+                'title' => get_the_title(),
+                'permalink' => get_the_permalink(),
+                'month' => $eventDate->format('M'),
+                'day' => $eventDate->format('d'),
+                'description' => $description
+            ));
+        };
+
         if(get_post_type() == 'professor'){
             array_push($results['professors'], array(
                 'title' => get_the_title(),
@@ -124,6 +153,8 @@ foreach($results['programmes'] as $item){
             ));
         };
     };
+    
+    $results['events'] = array_values(array_unique($results['events'], SORT_REGULAR));
     $results['professors'] = array_values(array_unique($results['professors'], SORT_REGULAR));
 
 }
