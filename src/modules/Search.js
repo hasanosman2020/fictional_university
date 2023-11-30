@@ -1,4 +1,4 @@
-import $ from 'jquery'
+import axios from "axios"
 class Search {
     //1. describe and create/initiate our object
     constructor() {
@@ -15,15 +15,22 @@ class Search {
         this.previousValue;
         this.getResults();
     }
-    
+   
+    //2. events
     events() {
-        this.openButton[0].addEventListener("click", this.openOverlay.bind(this));
-        this.openButton[1].addEventListener("click", this.openOverlay.bind(this));
-        this.closeButton.addEventListener("click", this.closeOverlay.bind(this));
-        window.addEventListener("keydown", this.keyPressHandler.bind(this));
-        this.searchTerm.addEventListener("keyup", this.typingLogic.bind(this));
+        this.openButton.forEach(el => {
+            el.addEventListener("click", e => {
+                e.preventDefault();
+                this.openOverlay();
+            });
+        });
 
+        this.closeButton.addEventListener("click", () => this.closeOverlay());
+        document.addEventListener("keydown", e => this.keyPressHandler(e));
+        this.searchTerm.addEventListener("keyup", () => this.typingLogic());
     }
+       
+
     //3. methods (function, action...)
     typingLogic() {
         //console.log(e.keyCode)
@@ -45,8 +52,10 @@ class Search {
         this.previousValue = this.searchTerm.value;
     }
 
-    getResults() {
-        $.getJSON(universityData.root_url + '/wp-json/university/v1/search?term=' + this.searchTerm.value, results => {
+    async getResults() {
+        try {
+            const response = await axios.get(universityData.root_url + '/wp-json/university/v1/search?term=' + this.searchTerm.value);
+            const results = response.data;
             this.resultsDiv.innerHTML =
                 `<div class="row">
         <div class="one-third">
@@ -111,24 +120,13 @@ class Search {
                 };
         </div>
         </div>`;
+            this.isSpinnerVisible = false;
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
-        });
-        this.isSpinnerVisible = false;
-
-    };
-
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /*this.resultsDiv.innerHTML = "Imagine real search results here...";
+      /*this.resultsDiv.innerHTML = "Imagine real search results here...";
 this.isSpinnerVisible = false;*/
 
     /*Initial built-in default wp API URL
@@ -158,13 +156,12 @@ this.isSpinnerVisible = false;*/
     keyPressHandler(e) {
 
         //console.log(e.keyCode);
-        if (e.keyCode == 83 && !this.isOverlayOpen && document.activeElement.tagName != 'INPUT') {
+        if (e.keyCode == 83 && !this.isOverlayOpen && document.activeElement.tagName != 'INPUT' && document.activeElement.tagName != 'TEXTAREA') {
             this.openOverlay();
         };
         if (e.keyCode == 27 && this.isOverlayOpen) {
             this.closeOverlay();
         };
-
     };
     openOverlay() {
         this.searchOverlay.classList.add("search-overlay--active");
@@ -173,7 +170,7 @@ this.isSpinnerVisible = false;*/
         setTimeout(() => this.searchTerm.focus(), 301);
         console.log("open method just ran");
         this.isOverlayOpen = true;
-
+        return false;
     }
 
     closeOverlay() {
