@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios from "axios";
 class Search {
     //1. describe and create/initiate our object
     constructor() {
@@ -171,6 +171,7 @@ this.isSpinnerVisible = false;*/
         console.log("open method just ran");
         this.isOverlayOpen = true;
         return false;
+        
     }
 
     closeOverlay() {

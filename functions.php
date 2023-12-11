@@ -113,3 +113,24 @@ wp_enqueue_script('jquery'); # Loading the wp bundled jQuery version
 }
 
 add_action('wp_enqueue_scripts', 'load_scripts');
+
+
+function redirectSubsToFrontend(){
+    $ourCurrentUser = wp_get_current_user();
+
+    if(count($ourCurrentUser->roles)==1 AND $ourCurrentUser->roles[0] == 'subscriber'){
+        wp_redirect('site_url'('/'));
+        exit;
+    }
+}
+add_action('wp_loaded', 'redirectSubsToFrontend');
+
+function noSubsAdminBar(){
+    $ourCurrentUser = wp_get_current_user();
+
+    if(count($ourCurrentUser->roles)==1 AND $ourCurrentUser->roles[0] == 'subscriber'){
+        show_admin_bar(false);
+        exit;
+    }
+}
+add_action('wp_loaded', 'noSubsAdminBar');
