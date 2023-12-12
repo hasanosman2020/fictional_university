@@ -123,7 +123,7 @@ function redirectSubsToFrontend(){
         exit;
     }
 }
-add_action('wp_loaded', 'redirectSubsToFrontend');
+add_action('admin_init', 'redirectSubsToFrontend');
 
 function noSubsAdminBar(){
     $ourCurrentUser = wp_get_current_user();
