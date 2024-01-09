@@ -3,6 +3,8 @@
     <head>
         <title><?php the_title(); ?></title>
         <?php wp_head(); ?>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
     </head>
     <body>
          <header class="site-header">

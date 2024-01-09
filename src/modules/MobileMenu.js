@@ -15,5 +15,4 @@ class MobileMenu {
     this.menu.classList.toggle("site-header__menu--active")
   }
 }
-
 export default MobileMenu
