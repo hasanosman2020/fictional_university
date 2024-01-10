@@ -2269,6 +2269,8 @@ class MyNotes {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(".delete-note").on("click", this.deleteNote);
     //when the user clicks on the edit button, the editNote method will run
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(".edit-note").on("click", this.editNote.bind(this));
+    //when the user clicks on the update button, the updateNote method will run
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".update-note").on("click", this.updateNote.bind(this));
   }
 
   //Methods will go here
@@ -2324,6 +2326,39 @@ class MyNotes {
     thisNote.find(".update-note").removeClass("update-note--visible");
     //add a data-state attribute to the note and set it to cancel or false because of the if statement above
     thisNote.data("state", "cancel");
+  }
+  updateNote(e) {
+    let thisNote = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).parents("li");
+
+    //the data that we want to send to the server
+    let ourUpdatedPost = {
+      'title': thisNote.find(".note-title-field").val(),
+      'content': thisNote.find(".note-body-field").val()
+    };
+    //before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      beforeSend: xhr => {
+        xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+      },
+      //send to the rooturl and the rest api endpoint, and we pass it the id of the note that we want to update
+      url: universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.data('id'),
+      //we want to send a post request to the server
+      type: 'POST',
+      //we want to send the data that we created
+      data: ourUpdatedPost,
+      //we want to run this function if the request is successful
+      success: response => {
+        //we want to make the note readonly
+        this.makeNoteReadOnly(thisNote);
+        console.log("Congrats, you created a neqw note");
+        console.log(response);
+      },
+      //we want to run this function if the request is not successful
+      error: response => {
+        console.log("Error");
+        console.log(response);
+      }
+    });
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MyNotes);
