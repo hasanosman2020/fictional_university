@@ -141,7 +141,7 @@ function ourHeaderUrl(){
 }
 add_filter('login_headerurl', 'ourHeaderUrl');
 
-function ourLoginCSs(){
+function ourLoginCSS(){
     wp_enqueue_style('custom-google-fonts', '//fonts.googleapis.com/css?fd;;family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
     wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
     wp_enqueue_style('university_main_styles', get_theme_file_uri('/build/style-index.css'));
@@ -164,10 +164,10 @@ function makeNotePrivate($data){
 $data['post_content'] = sanitize_textarea_field($data['post_content']);
 $data['post_title'] = sanitize_text_field($data['post_title']);
     };
-    
+
     if($data['post_type'] == 'note' AND $data['post_status'] != 'trash'){
         $data['post_status'] = 'private';
     };
     return $data;
-}
+};
 add_filter('wp_insert_post_data', 'makeNotePrivate');

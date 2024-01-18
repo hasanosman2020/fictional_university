@@ -2272,7 +2272,7 @@ class MyNotes {
     //when the user clicks on the update button, the updateNote method will run
     jquery__WEBPACK_IMPORTED_MODULE_0___default()("#my-notes").on("click", ".update-note", this.updateNote.bind(this));
     //when the user clicks on the create note button, the createNote method will run
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".submit-note").on("click", this.createNote.bind(this));
+    //$(".submit-note").on("click", this.createNote.bind(this));
   }
 
   //Methods will go here
@@ -2306,7 +2306,7 @@ class MyNotes {
     if (thisNote.data("state") == "editable") {
       this.makeNoteReadOnly(thisNote);
     } else {
-      this.makeNoteEditable(thisNote);
+      this.makeNoteEditable(thisNote).bind(this);
     }
   }
   makeNoteEditable(thisNote) {
@@ -2363,219 +2363,198 @@ class MyNotes {
       }
     });
   }
-  createNote(e) {
-    //the data that we want to send to the server
-    let ourNewPost = {
-      'title': jquery__WEBPACK_IMPORTED_MODULE_0___default()('.new-note-title').val(),
-      'content': jquery__WEBPACK_IMPORTED_MODULE_0___default()(".new-note-body").val(),
-      'status': 'publish'
-    };
-    //before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
-    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
-      beforeSend: xhr => {
-        xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
-      },
-      //send to the rooturl and the rest api endpoint, and we pass it the id of the note that we want to update
-      url: universityData.root_url + '/wp-json/wp/v2/note/',
-      //we want to send a post request to the server
-      type: 'POST',
-      //we want to send the data that we created
-      data: ourNewPost,
-      //we want to run this function if the request is successful
-      success: response => {
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()('new-note-title, .new-note-content').val();
-
-        //if successful, we want to create a new note and append it to the list of notes
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()(`
-                <li data-id="${response.id}">
-                <input readonly class="note-title-field" value=
-                "${response.title.raw}">
-                <span class="edit-note"><i class="fa fa-pencil">Edit</i></span>
-                <span class="delete-note"><i class="fa fa-trash-o">Delete</i></span>
-                <textarea readonly class="note-body-field">${response.content.raw}</textarea>
-                <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i>Save</span> 
-            </li>`).prependTo('#my-notes').hide().slideDown();
-        console.log("Congrats, you created a neqw note");
-        console.log(response);
-      },
-      //we want to run this function if the request is not successful
-      error: response => {
-        console.log("Error");
-        console.log(response);
-      }
-    });
-  }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MyNotes);
+/*
+    createNote(e) {
+        //the data that we want to send to the server
+        let ourNewPost = {
+            'title': $('.new-note-title').val(), 
+            'content': $(".note-body-field").val(),
+            'status': 'publish'
+        }
+        //before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
+/* $.ajax({
+     beforeSend: (xhr) => {
+         xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+     },
+     //send to the rooturl and the rest api endpoint, and we pass it the id of the note that we want to update
+     url: universityData.root_url + '/wp-json/wp/v2/note/',
+     //we want to send a post request to the server
+     type: 'POST',
+     //we want to send the data that we created
+     data: ourNewPost,
+     //we want to run this function if the request is successful
+     success: (response) => {
+         $('new-note-title, .new-note-body').val();
+          //if successful, we want to create a new note and append it to the list of notes
+         $(`
+         <li data-id="${response.id}">
+         <input readonly class="note-title-field" value=
+         "${response.title.raw}">
+         <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true">Edit</i></span>
+         <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</span>
+         <textarea readonly class="note-body-field">${response.content.raw}</textarea>
+         <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-write" aria-hidden="true"></i>Save</span> 
+     </li>`).prependTo('#my-notes').hide().slideDown();
+         
+         console.log("Congrats, you created a neqw note");
+         console.log(response);
+     },
+     //we want to run this function if the request is not successful
+     error: (response) => {
+         console.log("Error");
+         console.log(response);
+     }
+ })
+}
+}
+export default MyNotes;
 
 /*
 class MyNotes {
-    constructor() {
-
-        // alert("New note created.")
-        this.deleteBtn = document.querySelectorAll('.delete-note');
-        this.editBtn = document.querySelectorAll('.edit-note');
-        
-        this.events();
-    }
-
-    events() {
-        this.deleteBtn.forEach(btn => btn.addEventListener('click', this.deleteNote));
-        this.editBtn.forEach(btn => btn.addEventListener('click', this.editNote));
-    }
-
-    //Methods will go here
-    deleteNote(e) {
-        //alert("You clicked the delete button.");
-        const thisNote = e.target.closest('li');
-        console.log(thisNote);
-
-        fetch(universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.dataset.id,
-            {
-                method: 'DELETE',
-                headers: {
-                    'X-WP-Nonce': universityData.nonce,
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                } else {
-                    thisNote.remove(thisNote);
-                    return response.json();
-                    
-
-                }
-            })
-            .catch(error => console.log(error));
-    }
-
-    editNote(e) {
-        let thisNote = e.target.closest('li');
-
-        if (thisNote.dataset.state == 'editable') {
-            this.makeNoteReadOnly(thisNote);
-        } else {
-            this.makeNoteEditable(thisNote);
-        }
-    }
-
-    makeNoteEditable(thisNote) {
-        thisNote.dataset.state = 'editable';
-        thisNote.querySelector('.edit-note').innerHTML = '<i class="fa fa-times" aria-hidden="true"></i>Cancel';
-        thisNote.querySelector('.note-title-field').removeAttribute('readonly');
-
-    }
+constructor() {
+  // alert("New note created.")
+ this.deleteBtn = document.querySelectorAll('.delete-note');
+ this.editBtn = document.querySelectorAll('.edit-note');
+ 
+ this.events();
+}
+events() {
+ this.deleteBtn.forEach(btn => btn.addEventListener('click', this.deleteNote));
+ this.editBtn.forEach(btn => btn.addEventListener('click', this.editNote));
+}
+//Methods will go here
+deleteNote(e) {
+ //alert("You clicked the delete button.");
+ const thisNote = e.target.closest('li');
+ console.log(thisNote);
+  fetch(universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.dataset.id,
+     {
+         method: 'DELETE',
+         headers: {
+             'X-WP-Nonce': universityData.nonce,
+         }
+     })
+     .then(response => {
+         if (!response.ok) {
+             throw Error(response.statusText);
+         } else {
+             thisNote.remove(thisNote);
+             return response.json();
+             
+          }
+     })
+     .catch(error => console.log(error));
+}
+editNote(e) {
+ let thisNote = e.target.closest('li');
+  if (thisNote.dataset.state == 'editable') {
+     this.makeNoteReadOnly(thisNote);
+ } else {
+     this.makeNoteEditable(thisNote);
+ }
+}
+makeNoteEditable(thisNote) {
+ thisNote.dataset.state = 'editable';
+ thisNote.querySelector('.edit-note').innerHTML = '<i class="fa fa-times" aria-hidden="true"></i>Cancel';
+ thisNote.querySelector('.note-title-field').removeAttribute('readonly');
+}
 /*
-    editNote = (e) => {
-        const note = e.target.closest('li');
- 
-        if (note.dataset.status == "editable") {
-            this.makeReadOnly(note);
-        } else {
-            this.makeEditable(note);
-        }
-    };
- 
-    makeEditable = (target) => {
-        //changes note status to editable
-        target.dataset.status = "editable";
- 
-        //unlock all inputs
-        const inputs = target.querySelectorAll('input, textarea');
-        inputs.forEach(el => {
-            el.readOnly = false;
-            el.classList.add('note-active-field');
-        });
- 
-        //saves old values for current note
-        const title = target.querySelector('input').value;
-        const body = target.querySelector('textarea').value;
-        this.noteValues[target.dataset.id] = { title: title, content: body };
- 
-        //transform edit button
-        target.querySelector('.update-note').classList.add('update-note--visible');
-        target.querySelector('.edit-note').innerHTML = `< class="fa fa-times" aria-hidden="true"></i>Cancel`;
-    };
- 
-    makeReadOnly = (target) => {
-        //changes note status to not editable
-        target.dataset.status = false;
- 
-        //lock all inputs
-        const inputs = target.querySelectorAll('input, textarea');
-        inputs.forEach(el => {
-            el.readOnly = true;
-            el.classList.remove('note-active-field');
-        });
- 
-        //Restore old values for current note
-        target.querySelector('input').value = this.noteValues[target.dataset.id].title;
-        target.querySelector('textarea').value = this.noteValues[target.dataset.id].content;
- 
-        //transform cancel button
-        target.querySelector('.update-note').classList.remove('update-note--visible');
-        target.querySelector('.edit-note').innerHTML = '<i class="fa fa-pencil" aria-hidden="true">Edit</i>';
-    };
- 
-    /*
-    editNote = (e) => {
-        //alert("You clicked the edit button.")
-        const thisNote = e.target.closest('li');
-        
-        if (thisNote.getAttribute('data-state') == 'editable') {
-            this.makeNoteReadOnly(thisNote);
-        } else {
-            this.makeNoteEditable(thisNote);
-        }
-    }
-    
-        makeNoteEditable(thisNote) {
-            thisNote.setAttribute('data-state', 'editable');
-            thisNote.querySelector('.edit-note').innerHTML = '<i class="fa fa-times" aria-hidden="true"></i>Cancel';
-            thisNote.querySelector('.note-title-field').removeAttribute('readonly');
-            thisNote.querySelector('.note-body-field').removeAttribute('readonly');
-            thisNote.querySelector('.upodate-note').classList.add('update-note--visible');
-            thisNote.querySelector('.note-title-field').classList.add('note-active-field');
-            thisNote.querySelector('.note-body-field').classList.add('note-active-field');
-
-        }
-
-        makeNoteReadOnly(thisNote) {
-            thisNote.setAttribute('data-state', 'cancel');
-            thisNote.querySelector('.edit-note').innerHTML = '<i class="fa fa-pencil" aria-hidden="true"></i>Edit';
-            thisNote.querySelector('.note-title-field').setAttribute('readonly', 'readonly');
-            thisNote.querySelector('.note-body-field').setAttribute('readonly', 'readonly');
-            thisNote.querySelector('.update-note').classList.remove('update-note--visible');
-            thisNote.querySelector('.note-title-field').classList.remove('note-active-field');
-            thisNote.querySelector('.note-body-field').classList.remove('note-active-field');
-
-        }
-    }
+editNote = (e) => {
+ const note = e.target.closest('li');
+   if (note.dataset.status == "editable") {
+     this.makeReadOnly(note);
+ } else {
+     this.makeEditable(note);
+ }
+};
+makeEditable = (target) => {
+ //changes note status to editable
+ target.dataset.status = "editable";
+   //unlock all inputs
+ const inputs = target.querySelectorAll('input, textarea');
+ inputs.forEach(el => {
+     el.readOnly = false;
+     el.classList.add('note-active-field');
+ });
+   //saves old values for current note
+ const title = target.querySelector('input').value;
+ const body = target.querySelector('textarea').value;
+ this.noteValues[target.dataset.id] = { title: title, content: body };
+   //transform edit button
+ target.querySelector('.update-note').classList.add('update-note--visible');
+ target.querySelector('.edit-note').innerHTML = `< class="fa fa-times" aria-hidden="true"></i>Cancel`;
+};
+makeReadOnly = (target) => {
+ //changes note status to not editable
+ target.dataset.status = false;
+   //lock all inputs
+ const inputs = target.querySelectorAll('input, textarea');
+ inputs.forEach(el => {
+     el.readOnly = true;
+     el.classList.remove('note-active-field');
+ });
+   //Restore old values for current note
+ target.querySelector('input').value = this.noteValues[target.dataset.id].title;
+ target.querySelector('textarea').value = this.noteValues[target.dataset.id].content;
+   //transform cancel button
+ target.querySelector('.update-note').classList.remove('update-note--visible');
+ target.querySelector('.edit-note').innerHTML = '<i class="fa fa-pencil" aria-hidden="true">Edit</i>';
+};
 /*
-        fetch(universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.dataset.id, {
-            method: "POST",
-            headers: {
-                'X-WP-Nonce': universityData.nonce,
-                'Content-Type': 'application/json',
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw Error(response.statusText);
-                    console.log('Error');
-                } else {
-                    this.titleField.removeAttr(readonly);
-                    this.contentField.removeAttr(readonly);
-                    this.editBtn.classList.toggle('edit-note--visible');
-                    this.titleField.classList.add('note-active-field');
-                    this.contentField.classList.add('note-active-field');
-                }
-            })
-        .catch(error => console.log(error));
-
-            }
-        }
+editNote = (e) => {
+ //alert("You clicked the edit button.")
+ const thisNote = e.target.closest('li');
+ 
+ if (thisNote.getAttribute('data-state') == 'editable') {
+     this.makeNoteReadOnly(thisNote);
+ } else {
+     this.makeNoteEditable(thisNote);
+ }
+}
+      makeNoteEditable(thisNote) {
+     thisNote.setAttribute('data-state', 'editable');
+     thisNote.querySelector('.edit-note').innerHTML = '<i class="fa fa-times" aria-hidden="true"></i>Cancel';
+     thisNote.querySelector('.note-title-field').removeAttribute('readonly');
+     thisNote.querySelector('.note-body-field').removeAttribute('readonly');
+     thisNote.querySelector('.upodate-note').classList.add('update-note--visible');
+     thisNote.querySelector('.note-title-field').classList.add('note-active-field');
+     thisNote.querySelector('.note-body-field').classList.add('note-active-field');
+  }
+  makeNoteReadOnly(thisNote) {
+     thisNote.setAttribute('data-state', 'cancel');
+     thisNote.querySelector('.edit-note').innerHTML = '<i class="fa fa-pencil" aria-hidden="true"></i>Edit';
+     thisNote.querySelector('.note-title-field').setAttribute('readonly', 'readonly');
+     thisNote.querySelector('.note-body-field').setAttribute('readonly', 'readonly');
+     thisNote.querySelector('.update-note').classList.remove('update-note--visible');
+     thisNote.querySelector('.note-title-field').classList.remove('note-active-field');
+     thisNote.querySelector('.note-body-field').classList.remove('note-active-field');
+  }
+}
+/*
+ fetch(universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.dataset.id, {
+     method: "POST",
+     headers: {
+         'X-WP-Nonce': universityData.nonce,
+         'Content-Type': 'application/json',
+     }
+ })
+     .then(response => {
+         if (!response.ok) {
+             throw Error(response.statusText);
+             console.log('Error');
+         } else {
+             this.titleField.removeAttr(readonly);
+             this.contentField.removeAttr(readonly);
+             this.editBtn.classList.toggle('edit-note--visible');
+             this.titleField.classList.add('note-active-field');
+             this.contentField.classList.add('note-active-field');
+         }
+     })
+ .catch(error => console.log(error));
+      }
+ }
 }
 export default MyNotes;
 */
