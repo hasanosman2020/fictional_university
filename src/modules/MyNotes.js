@@ -1,3 +1,5 @@
+
+
 import $ from 'jquery';
 
 class MyNotes {
@@ -15,7 +17,7 @@ class MyNotes {
         //when the user clicks on the update button, the updateNote method will run
         $("#my-notes").on("click", ".update-note", this.updateNote.bind(this));
         //when the user clicks on the create note button, the createNote method will run
-        //$(".submit-note").on("click", this.createNote.bind(this));
+        $(".submit-note").on("click", this.createNote);
 
 
 
@@ -108,7 +110,7 @@ class MyNotes {
             success: (response) => {
                 //we want to make the note readonly
                 this.makeNoteReadOnly(thisNote);
-                console.log("Congrats, you created a neqw note");
+                console.log("Congrats, you created a new note");
                 console.log(response);
             },
             //we want to run this function if the request is not successful
@@ -118,9 +120,9 @@ class MyNotes {
             }
         });
     }
-}
-export default MyNotes;
-/*
+
+
+
     createNote(e) {
         //the data that we want to send to the server
         let ourNewPost = {
@@ -129,7 +131,7 @@ export default MyNotes;
             'status': 'publish'
         }
         //before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
-       /* $.ajax({
+        $.ajax({
             beforeSend: (xhr) => {
                 xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
             },
