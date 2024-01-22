@@ -2255,157 +2255,211 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "jquery");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+//import $ from 'jquery';
 
 class MyNotes {
   constructor() {
     // jQuery selectors
-    this.events();
+    //this.events();
+
+    /***JavaScript***/
+    //check if DOM element with the id of #my-notes exists on the page before running the code below (to avoid errors)
+    if (document.querySelector('#my-notes')) {
+      //sets the nonce variable to the value of the nonce attribute on the #my-notes DOM element (which is set in functions.php) and makes it available globally
+      (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults).headers.common["X-WP-Nonce"] = universityData.nonce;
+      //make a global variable from the DOM element with the id of #my-notes
+      this.myNotes = document.querySelector('#my-notes');
+      this.events();
+    }
   }
   events() {
     /* jQuery
     when the user clicks on the delete button, the deleteNote method will run*/
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()("#my-notes").on("click", ".delete-note", this.deleteNote);
+    //$("#my-notes").on("click", ".delete-note", this.deleteNote);
     //when the user clicks on the edit button, the editNote method will run
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()("#my-notes").on("click", ".edit-note", this.editNote.bind(this));
+    //$("#my-notes").on("click", ".edit-note", this.editNote.bind(this));
     //when the user clicks on the update button, the updateNote method will run
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()("#my-notes").on("click", ".update-note", this.updateNote.bind(this));
+    //$("#my-notes").on("click", ".update-note", this.updateNote.bind(this));
     //when the user clicks on the create note button, the createNote method will run
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".submit-note").on("click", this.createNote);
+    //$(".submit-note").on("click", this.createNote);
+
+    /***JavaScript***/
+    //listen for clicks on the #my-notes element by adding an event listener
+    this.myNotes.addEventListener('click', e => this.clickHandler(e));
+  }
+  clickHandler(e) {
+    //if the element clicked has the class .delete-note, then run the deleteNote method
+    if (e.target.classList.contains('delete-note') || e.target.classList.contains('fa-trash-o')) {
+      this.deleteNote(e);
+    }
+  }
+  findNearestParentLi(el) {
+    let thisNote = el;
+    while (thisNote.tagName != "LI") {
+      thisNote = thisNote.parentElement;
+    }
+    return thisNote;
   }
 
   //Methods will go here
   /* jQuery
   e is the event object, and we can use it to get the element that was clicked on - e.target contains information about the element that was clicked on and we look for the closest li element to that element which is the note that we want to delete. */
-  deleteNote(e) {
-    let thisNote = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).parents("li");
-    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
-      //before the delete operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to delete the note - we create a new property called beforeSend and we pass it a function that will run before the delete opoeration is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to delete the note*/
-      beforeSend: xhr => {
-        xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
-      },
-      // send to the rooturl and the rest api endpoint and we pass it the id of the note that we want to delete
-      url: universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.data('id'),
-      type: 'DELETE',
-      success: response => {
-        thisNote.slideUp();
-        console.log("Congrats");
-        console.log(response);
-      },
-      error: response => {
-        console.log("Error");
-        console.log(response);
-      }
-    });
-  }
-  editNote(e) {
-    let thisNote = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).parents("li");
+  // deleteNote(e) {
+  //let thisNote = $(e.target).parents("li");
 
-    //if the note is editable we want to make it readonly
-    if (thisNote.data("state") == "editable") {
-      this.makeNoteReadOnly(thisNote);
-    } else {
-      this.makeNoteEditable(thisNote).bind(this);
+  // $.ajax({
+  //before the delete operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to delete the note - we create a new property called beforeSend and we pass it a function that will run before the delete opoeration is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to delete the note*/
+  //beforeSend: (xhr) => {
+  // xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+  //},
+  // send to the rooturl and the rest api endpoint and we pass it the id of the note that we want to delete
+  //url: universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.data('id'),
+  //type: 'DELETE',
+  //success: (response) => {
+  // thisNote.slideUp();
+  //console.log("Congrats");
+  // console.log(response);
+
+  // },
+  // error: (response) => {
+  //      console.log("Error");
+  // console.log(response);
+
+  //}
+  //});
+  // }
+
+  /***JavaScript***/
+  //Delete operation
+  deleteNote(e) {
+    let thisNote = this.findNearestParentLi(e.target);
+    try {
+      const response = axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"](universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.getAttribute("data-id"));
+      //an animation to let the user know that the note has been deleted
+      thisNote.remove(thisNote);
+    } catch (e) {
+      console.log('Error');
+      console.log(e);
     }
   }
-  makeNoteEditable(thisNote) {
-    //find the edit button and change it to cancel
-    thisNote.find(".edit-note").html('<i class="fa fa-times" aria-hidden="true"></i> Cancel');
-    //find the title field and body field and remove the readonly attribute and add the note-active-field class which will add a border to the field and make it look like it is active
-    thisNote.find(".note-title-field, .note-body-field").removeAttr("readonly").addClass("note-active--field");
-    //find the save button which has a class of update-note and add the update-note--visible class which will make the button visible
-    thisNote.find(".update-note").addClass("update-note--visible");
-    //add a data-state attribute to the note and set it to editable because of the if statement above
-    thisNote.data("state", "editable");
-  }
-  makeNoteReadOnly(thisNote) {
-    //find the edit button which will now say cancel and change it back to edit
-    thisNote.find('.edit-note').html('<i class="fa fa-pencil" aria-hidden="true"></i> Edit');
-    //find the title field and body field and add the readonly attribute and remove the note-active-field class which will remove the border from the field and make it look like it is not active
-    thisNote.find(".note-title-field, .note-body-field").attr("readonly", "readonly").removeClass("note-active-field");
-    //find the save button which has a class of update-note and remove the update-note--visible class which will make the button invisible
-    thisNote.find(".update-note").removeClass("update-note--visible");
-    //add a data-state attribute to the note and set it to cancel or false because of the if statement above
-    thisNote.data("state", "cancel");
-  }
-  updateNote(e) {
-    let thisNote = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).parents("li");
-
-    //the data that we want to send to the server
-    let ourUpdatedPost = {
-      'title': thisNote.find(".note-title-field").val(),
-      'content': thisNote.find(".note-body-field").val(),
-      'status': 'publish'
-    };
-    //before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
-    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
-      beforeSend: xhr => {
-        xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
-      },
-      //send to the rooturl and the rest api endpoint, and we pass it the id of the note that we want to update
-      url: universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.data('id'),
-      //we want to send a post request to the server
-      type: 'POST',
-      //we want to send the data that we created
-      data: ourUpdatedPost,
-      //we want to run this function if the request is successful
-      success: response => {
-        //we want to make the note readonly
-        this.makeNoteReadOnly(thisNote);
-        console.log("Congrats, you created a new note");
-        console.log(response);
-      },
-      //we want to run this function if the request is not successful
-      error: response => {
-        console.log("Error");
-        console.log(response);
-      }
-    });
-  }
-  createNote(e) {
-    //the data that we want to send to the server
-    let ourNewPost = {
-      'title': jquery__WEBPACK_IMPORTED_MODULE_0___default()('.new-note-title').val(),
-      'content': jquery__WEBPACK_IMPORTED_MODULE_0___default()(".note-body-field").val(),
-      'status': 'publish'
-    };
-    //before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
-    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
-      beforeSend: xhr => {
-        xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
-      },
-      //send to the rooturl and the rest api endpoint, and we pass it the id of the note that we want to update
-      url: universityData.root_url + '/wp-json/wp/v2/note/',
-      //we want to send a post request to the server
-      type: 'POST',
-      //we want to send the data that we created
-      data: ourNewPost,
-      //we want to run this function if the request is successful
-      success: response => {
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()('new-note-title, .new-note-body').val();
-
-        //if successful, we want to create a new note and append it to the list of notes
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()(`
-                <li data-id="${response.id}">
-                <input readonly class="note-title-field" value=
-                "${response.title.raw}">
-                <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true">Edit</i></span>
-                <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</span>
-                <textarea readonly class="note-body-field">${response.content.raw}</textarea>
-                <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-write" aria-hidden="true"></i>Save</span> 
-            </li>`).prependTo('#my-notes').hide().slideDown();
-        console.log("Congrats, you created a neqw note");
-        console.log(response);
-      },
-      //we want to run this function if the request is not successful
-      error: response => {
-        console.log("Error");
-        console.log(response);
-      }
-    });
-  }
 }
+
+// editNote(e) {
+//let thisNote = $(e.target).parents("li");
+
+//if the note is editable we want to make it readonly
+//if (thisNote.data("state") == "editable") {
+//this.makeNoteReadOnly(thisNote);
+//} else {
+// this.makeNoteEditable(thisNote).bind(this);
+//}
+// }
+
+// makeNoteEditable(thisNote) {
+//find the edit button and change it to cancel
+//thisNote.find(".edit-note").html('<i class="fa fa-times" aria-hidden="true"></i> Cancel');
+//find the title field and body field and remove the readonly attribute and add the note-active-field class which will add a border to the field and make it look like it is active
+//thisNote.find(".note-title-field, .note-body-field").removeAttr("readonly").addClass("note-active--field");
+//find the save button which has a class of update-note and add the update-note--visible class which will make the button visible
+// thisNote.find(".update-note").addClass("update-note--visible");
+//add a data-state attribute to the note and set it to editable because of the if statement above
+//thisNote.data("state", "editable");
+
+//}
+
+//makeNoteReadOnly(thisNote) {
+//find the edit button which will now say cancel and change it back to edit
+//thisNote.find('.edit-note').html('<i class="fa fa-pencil" aria-hidden="true"></i> Edit');
+//find the title field and body field and add the readonly attribute and remove the note-active-field class which will remove the border from the field and make it look like it is not active
+//thisNote.find(".note-title-field, .note-body-field").attr("readonly", "readonly").removeClass("note-active-field");
+//find the save button which has a class of update-note and remove the update-note--visible class which will make the button invisible
+//thisNote.find(".update-note").removeClass("update-note--visible");
+//add a data-state attribute to the note and set it to cancel or false because of the if statement above
+// thisNote.data("state", "cancel");
+
+//}
+
+// updateNote(e) {
+//let thisNote = $(e.target).parents("li");
+
+//the data that we want to send to the server
+//let ourUpdatedPost = {
+//'title': thisNote.find(".note-title-field").val(),
+//'content': thisNote.find(".note-body-field").val(),
+//'status': 'publish'
+//};
+//before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
+//$.ajax({
+//beforeSend: (xhr) => {
+// xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+//},
+//send to the rooturl and the rest api endpoint, and we pass it the id of the note that we want to update
+//url: universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.data('id'),
+//we want to send a post request to the server
+//type: 'POST',
+//we want to send the data that we created
+// data: ourUpdatedPost,
+//we want to run this function if the request is successful
+// success: (response) => {
+//we want to make the note readonly
+// this.makeNoteReadOnly(thisNote);
+//console.log("Congrats, you created a new note");
+//console.log(response);
+//},
+//we want to run this function if the request is not successful
+//error: (response) => {
+//console.log("Error");
+// console.log(response);
+// }
+//});
+// }
+
+//createNote(e) {
+//the data that we want to send to the server
+// let ourNewPost = {
+//'title': $('.new-note-title').val(), 
+//'content': $(".note-body-field").val(),
+// 'status': 'publish'
+//}
+//before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
+//$.ajax({
+//beforeSend: (xhr) => {
+// xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+//},
+//send to the rooturl and the rest api endpoint, and we pass it the id of the note that we want to update
+// url: universityData.root_url + '/wp-json/wp/v2/note/',
+//we want to send a post request to the server
+//type: 'POST',
+//we want to send the data that we created
+//data: ourNewPost,
+//we want to run this function if the request is successful
+//success: (response) => {
+// $('new-note-title, .new-note-body').val();
+
+//if successful, we want to create a new note and append it to the list of notes
+//$(`
+// <li data-id="${response.id}">
+// <input readonly class="note-title-field" value=
+// "${response.title.raw}">
+// <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true">Edit</i></span>
+//<span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</span>
+// <textarea readonly class="note-body-field">${response.content.raw}</textarea>
+// <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-write" aria-hidden="true"></i>Save</span> 
+// </li>`).prependTo('#my-notes').hide().slideDown();
+
+// console.log("Congrats, you created a neqw note");
+//console.log(response);
+//},
+//we want to run this function if the request is not successful
+//error: (response) => {
+//console.log("Error");
+// console.log(response);
+//}
+//})
+// }
+//}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MyNotes);
 
 /*
@@ -2788,17 +2842,6 @@ class Search {
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
-
-/***/ }),
-
-/***/ "jquery":
-/*!*************************!*\
-  !*** external "jQuery" ***!
-  \*************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = window["jQuery"];
 
 /***/ }),
 
