@@ -2294,6 +2294,12 @@ class MyNotes {
     if (e.target.classList.contains('delete-note') || e.target.classList.contains('fa-trash-o')) {
       this.deleteNote(e);
     }
+    if (e.target.classList.contains('edit-note') || e.target.classList.contains('fa-pencil')) {
+      this.editNote(e);
+    }
+    if (e.target.classList.contains('update-note') || e.target.classList.contains('fa-arrow-right')) {
+      this.updateNote(e);
+    }
   }
   findNearestParentLi(el) {
     let thisNote = el;
@@ -2344,77 +2350,128 @@ class MyNotes {
       console.log(e);
     }
   }
+
+  // editNote(e) {
+  //let thisNote = $(e.target).parents("li");
+
+  //if the note is editable we want to make it readonly
+  //if (thisNote.data("state") == "editable") {
+  //this.makeNoteReadOnly(thisNote);
+  //} else {
+  // this.makeNoteEditable(thisNote).bind(this);
+  //}
+  // }
+
+  // makeNoteEditable(thisNote) {
+  //find the edit button and change it to cancel
+  //thisNote.find(".edit-note").html('<i class="fa fa-times" aria-hidden="true"></i> Cancel');
+  //find the title field and body field and remove the readonly attribute and add the note-active-field class which will add a border to the field and make it look like it is active
+  //thisNote.find(".note-title-field, .note-body-field").removeAttr("readonly").addClass("note-active--field");
+  //find the save button which has a class of update-note and add the update-note--visible class which will make the button visible
+  // thisNote.find(".update-note").addClass("update-note--visible");
+  //add a data-state attribute to the note and set it to editable because of the if statement above
+  //thisNote.data("state", "editable");
+
+  //}
+
+  //makeNoteReadOnly(thisNote) {
+  //find the edit button which will now say cancel and change it back to edit
+  //thisNote.find('.edit-note').html('<i class="fa fa-pencil" aria-hidden="true"></i> Edit');
+  //find the title field and body field and add the readonly attribute and remove the note-active-field class which will remove the border from the field and make it look like it is not active
+  //thisNote.find(".note-title-field, .note-body-field").attr("readonly", "readonly").removeClass("note-active-field");
+  //find the save button which has a class of update-note and remove the update-note--visible class which will make the button invisible
+  //thisNote.find(".update-note").removeClass("update-note--visible");
+  //add a data-state attribute to the note and set it to cancel or false because of the if statement above
+  // thisNote.data("state", "cancel");
+
+  //}
+
+  /***JavaScript***/
+  //Edit operation
+  editNote(e) {
+    const thisNote = this.findNearestParentLi(e.target);
+    if (thisNote.getAttribute('data-state') == 'editable') {
+      this.makeNoteReadOnly(thisNote);
+    } else {
+      this.makeNoteEditable(thisNote);
+    }
+  }
+  makeNoteEditable(thisNote) {
+    thisNote.setAttribute('data-state', 'editable');
+    thisNote.querySelector('.edit-note').innerHTML = '<i class="fa fa-times" aria-hidden = "true"></i>Cancel';
+    thisNote.querySelector('.note-title-field').removeAttribute('readonly');
+    thisNote.querySelector('.note-body-field').removeAttribute('readonly');
+    thisNote.querySelector('.note-title-field').classList.add('note-active-field');
+    thisNote.querySelector('.note-body-field').classList.add('note-active-field');
+    thisNote.querySelector('.update-note').classList.add('update-note--visible');
+  }
+  makeNoteReadOnly(thisNote) {
+    thisNote.setAttribute('data-state', 'cancel');
+    thisNote.querySelector('.edit-note').innerHTML = '<i class="fa fa-pencil" aria-hidden="true"></i>Edit';
+    thisNote.querySelector('.note-title-field').setAttribute('readonly', 'readonly');
+    thisNote.querySelector('.note-body-field').setAttribute('readonly', 'true');
+    thisNote.querySelector('.update-note').classList.remove('update-note-visible');
+    thisNote.querySelector('.note-title-field').classList.remove('note-active-field');
+    thisNote.querySelector('.note-body-field').classList.remove('note-active-field');
+  }
+
+  // updateNote(e) {
+  //let thisNote = $(e.target).parents("li");
+
+  //the data that we want to send to the server
+  //let ourUpdatedPost = {
+  //'title': thisNote.find(".note-title-field").val(),
+  //'content': thisNote.find(".note-body-field").val(),
+  //'status': 'publish'
+  //};
+  //before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
+  //$.ajax({
+  //beforeSend: (xhr) => {
+  // xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+  //},
+  //send to the rooturl and the rest api endpoint, and we pass it the id of the note that we want to update
+  //url: universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.data('id'),
+  //we want to send a post request to the server
+  //type: 'POST',
+  //we want to send the data that we created
+  // data: ourUpdatedPost,
+  //we want to run this function if the request is successful
+  // success: (response) => {
+  //we want to make the note readonly
+  // this.makeNoteReadOnly(thisNote);
+  //console.log("Congrats, you created a new note");
+  //console.log(response);
+  //},
+  //we want to run this function if the request is not successful
+  //error: (response) => {
+  //console.log("Error");
+  // console.log(response);
+  // }
+  //});
+  // }
+
+  //    /***JavaScript***/
+  //Update operation
+  async updateNote(e) {
+    const thisNote = this.findNearestParentLi(e.target);
+
+    //make a new object with the updated title and content of the note that we want to update and set the status to publish 
+    const ourUpdatedPost = {
+      'title': thisNote.querySelector('.note-title-field').value,
+      'content': thisNote.querySelector('.note-body-field').value,
+      'status': 'publish'
+    };
+    try {
+      //send a post request to the server to update the note
+      const response = await axios__WEBPACK_IMPORTED_MODULE_0___default().post(universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.getAttribute('data-id'), ourUpdatedPost);
+      //make the note readonly
+      this.makeNoteReadOnly(thisNote);
+    } catch (e) {
+      console.log('Error');
+      console.log(e);
+    }
+  }
 }
-
-// editNote(e) {
-//let thisNote = $(e.target).parents("li");
-
-//if the note is editable we want to make it readonly
-//if (thisNote.data("state") == "editable") {
-//this.makeNoteReadOnly(thisNote);
-//} else {
-// this.makeNoteEditable(thisNote).bind(this);
-//}
-// }
-
-// makeNoteEditable(thisNote) {
-//find the edit button and change it to cancel
-//thisNote.find(".edit-note").html('<i class="fa fa-times" aria-hidden="true"></i> Cancel');
-//find the title field and body field and remove the readonly attribute and add the note-active-field class which will add a border to the field and make it look like it is active
-//thisNote.find(".note-title-field, .note-body-field").removeAttr("readonly").addClass("note-active--field");
-//find the save button which has a class of update-note and add the update-note--visible class which will make the button visible
-// thisNote.find(".update-note").addClass("update-note--visible");
-//add a data-state attribute to the note and set it to editable because of the if statement above
-//thisNote.data("state", "editable");
-
-//}
-
-//makeNoteReadOnly(thisNote) {
-//find the edit button which will now say cancel and change it back to edit
-//thisNote.find('.edit-note').html('<i class="fa fa-pencil" aria-hidden="true"></i> Edit');
-//find the title field and body field and add the readonly attribute and remove the note-active-field class which will remove the border from the field and make it look like it is not active
-//thisNote.find(".note-title-field, .note-body-field").attr("readonly", "readonly").removeClass("note-active-field");
-//find the save button which has a class of update-note and remove the update-note--visible class which will make the button invisible
-//thisNote.find(".update-note").removeClass("update-note--visible");
-//add a data-state attribute to the note and set it to cancel or false because of the if statement above
-// thisNote.data("state", "cancel");
-
-//}
-
-// updateNote(e) {
-//let thisNote = $(e.target).parents("li");
-
-//the data that we want to send to the server
-//let ourUpdatedPost = {
-//'title': thisNote.find(".note-title-field").val(),
-//'content': thisNote.find(".note-body-field").val(),
-//'status': 'publish'
-//};
-//before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
-//$.ajax({
-//beforeSend: (xhr) => {
-// xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
-//},
-//send to the rooturl and the rest api endpoint, and we pass it the id of the note that we want to update
-//url: universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.data('id'),
-//we want to send a post request to the server
-//type: 'POST',
-//we want to send the data that we created
-// data: ourUpdatedPost,
-//we want to run this function if the request is successful
-// success: (response) => {
-//we want to make the note readonly
-// this.makeNoteReadOnly(thisNote);
-//console.log("Congrats, you created a new note");
-//console.log(response);
-//},
-//we want to run this function if the request is not successful
-//error: (response) => {
-//console.log("Error");
-// console.log(response);
-// }
-//});
-// }
 
 //createNote(e) {
 //the data that we want to send to the server
