@@ -35,6 +35,8 @@ class MyNotes {
         /***JavaScript***/
         //listen for clicks on the #my-notes element by adding an event listener
         this.myNotes.addEventListener('click', e => this.clickHandler(e));
+        //when the user clicks on the create note button which has a class of submit-note, the createNote method will run
+        document.querySelector('.submit-note').addEventListener('click', e => this.createNote())
     }
 
     clickHandler(e) {
@@ -57,11 +59,6 @@ class MyNotes {
         }
         return thisNote;
     }
-    
-
-
-
-
     
     
     //Methods will go here
@@ -94,10 +91,10 @@ class MyNotes {
 
     /***JavaScript***/
     //Delete operation
-    deleteNote(e) {
-        let thisNote = this.findNearestParentLi(e.target);
+    async deleteNote(e) {
+        const thisNote = this.findNearestParentLi(e.target);
         try {
-            const response = axios.delete(universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.getAttribute("data-id"));
+            const response = await axios.delete(universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.getAttribute("data-id"));
             //an animation to let the user know that the note has been deleted
             thisNote.remove(thisNote);
             
@@ -239,7 +236,8 @@ class MyNotes {
 
         }
     }
-    }
+    
+
 
 
 
@@ -247,7 +245,7 @@ class MyNotes {
     //createNote(e) {
         //the data that we want to send to the server
        // let ourNewPost = {
-            //'title': $('.new-note-title').val(), 
+            //'title': $('.new-note-title').val(),
             //'content': $(".note-body-field").val(),
            // 'status': 'publish'
         //}
@@ -274,7 +272,7 @@ class MyNotes {
                // <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true">Edit</i></span>
                 //<span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</span>
                // <textarea readonly class="note-body-field">${response.content.raw}</textarea>
-               // <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-write" aria-hidden="true"></i>Save</span> 
+               // <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-write" aria-hidden="true"></i>Save</span>
            // </li>`).prependTo('#my-notes').hide().slideDown();
 
                
@@ -288,7 +286,45 @@ class MyNotes {
             //}
         //})
    // }
-//}
+    //}
+    
+    /***JavaScript***/
+    //Create operation
+    async createNote() {
+        //make a new object with the title and content of the note that we want to create and set the statuis to publish
+        const ourNewPost = {
+            'title': document.querySelector('.new-note-title').value,
+            'content': document.querySelector('.new-note-body').value,
+            'status': 'publish'
+        }
+        try {
+            //send a post request to the server to create the note
+            const response = await axios.post(universityData.root_url + '/wp-json/wp/v2/note/', ourNewPost);
+            //clear the title and body fields
+            document.querySelector('.new-note-title').value = '';
+            document.querySelector('.new-note-body').value= '';
+
+            //create a new note and append it to the list of notes
+            document.querySelector('#my-notes').insertAdjacentHTML('afterbegin',
+            
+                `<li data-id="${response.data.id}" class="fade-in-calc"></li>
+                <input readonly class="note-title-field" value="${response.data.title.raw}">
+                <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</span>
+                <textarea readonly class="note-body-field">${response.data.content.raw}</textarea>
+                <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i>Save</span>
+                </li>`
+            
+            )
+
+
+        } catch (e) {
+            console.log('Error');
+            console.log(e);
+
+        }
+        }
+    }
 export default MyNotes;
 
 

@@ -2288,6 +2288,8 @@ class MyNotes {
     /***JavaScript***/
     //listen for clicks on the #my-notes element by adding an event listener
     this.myNotes.addEventListener('click', e => this.clickHandler(e));
+    //when the user clicks on the create note button which has a class of submit-note, the createNote method will run
+    document.querySelector('.submit-note').addEventListener('click', e => this.createNote());
   }
   clickHandler(e) {
     //if the element clicked has the class .delete-note, then run the deleteNote method
@@ -2339,10 +2341,10 @@ class MyNotes {
 
   /***JavaScript***/
   //Delete operation
-  deleteNote(e) {
-    let thisNote = this.findNearestParentLi(e.target);
+  async deleteNote(e) {
+    const thisNote = this.findNearestParentLi(e.target);
     try {
-      const response = axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"](universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.getAttribute("data-id"));
+      const response = await axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"](universityData.root_url + '/wp-json/wp/v2/note/' + thisNote.getAttribute("data-id"));
       //an animation to let the user know that the note has been deleted
       thisNote.remove(thisNote);
     } catch (e) {
@@ -2471,52 +2473,82 @@ class MyNotes {
       console.log(e);
     }
   }
+
+  //createNote(e) {
+  //the data that we want to send to the server
+  // let ourNewPost = {
+  //'title': $('.new-note-title').val(),
+  //'content': $(".note-body-field").val(),
+  // 'status': 'publish'
+  //}
+  //before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
+  //$.ajax({
+  //beforeSend: (xhr) => {
+  // xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
+  //},
+  //send to the rooturl and the rest api endpoint, and we pass it the id of the note that we want to update
+  // url: universityData.root_url + '/wp-json/wp/v2/note/',
+  //we want to send a post request to the server
+  //type: 'POST',
+  //we want to send the data that we created
+  //data: ourNewPost,
+  //we want to run this function if the request is successful
+  //success: (response) => {
+  // $('new-note-title, .new-note-body').val();
+
+  //if successful, we want to create a new note and append it to the list of notes
+  //$(`
+  // <li data-id="${response.id}">
+  // <input readonly class="note-title-field" value=
+  // "${response.title.raw}">
+  // <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true">Edit</i></span>
+  //<span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</span>
+  // <textarea readonly class="note-body-field">${response.content.raw}</textarea>
+  // <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-write" aria-hidden="true"></i>Save</span>
+  // </li>`).prependTo('#my-notes').hide().slideDown();
+
+  // console.log("Congrats, you created a neqw note");
+  //console.log(response);
+  //},
+  //we want to run this function if the request is not successful
+  //error: (response) => {
+  //console.log("Error");
+  // console.log(response);
+  //}
+  //})
+  // }
+  //}
+
+  /***JavaScript***/
+  //Create operation
+  async createNote() {
+    //make a new object with the title and content of the note that we want to create and set the statuis to publish
+    const ourNewPost = {
+      'title': document.querySelector('.new-note-title').value,
+      'content': document.querySelector('.new-note-body').value,
+      'status': 'publish'
+    };
+    try {
+      //send a post request to the server to create the note
+      const response = await axios__WEBPACK_IMPORTED_MODULE_0___default().post(universityData.root_url + '/wp-json/wp/v2/note/', ourNewPost);
+      //clear the title and body fields
+      document.querySelector('.new-note-title').value = '';
+      document.querySelector('.new-note-body').value = '';
+
+      //create a new note and append it to the list of notes
+      document.querySelector('#my-notes').insertAdjacentHTML('afterbegin', `<li data-id="${response.data.id}" class="fade-in-calc"></li>
+                <input readonly class="note-title-field" value="${response.data.title.raw}">
+                <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+                <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</span>
+                <textarea readonly class="note-body-field">${response.data.content.raw}</textarea>
+                <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i>Save</span>
+                </li>`);
+    } catch (e) {
+      console.log('Error');
+      console.log(e);
+    }
+  }
 }
-
-//createNote(e) {
-//the data that we want to send to the server
-// let ourNewPost = {
-//'title': $('.new-note-title').val(), 
-//'content': $(".note-body-field").val(),
-// 'status': 'publish'
-//}
-//before the update operation is performed, we want to send a request to the server to make sure that the user is logged in and that they have the permission to update the note - we create a new property called beforeSend and we pass it a function that will run before the update operation is performed - we pass it the xhr object which is the object that is used to make the request to the server - we add the X-WP-Nonce header to the request and we pass it the nonce that we created in the functions.php file - this will make sure that the user is logged in and that they have the permission to update the note*/
-//$.ajax({
-//beforeSend: (xhr) => {
-// xhr.setRequestHeader('X-WP-Nonce', universityData.nonce);
-//},
-//send to the rooturl and the rest api endpoint, and we pass it the id of the note that we want to update
-// url: universityData.root_url + '/wp-json/wp/v2/note/',
-//we want to send a post request to the server
-//type: 'POST',
-//we want to send the data that we created
-//data: ourNewPost,
-//we want to run this function if the request is successful
-//success: (response) => {
-// $('new-note-title, .new-note-body').val();
-
-//if successful, we want to create a new note and append it to the list of notes
-//$(`
-// <li data-id="${response.id}">
-// <input readonly class="note-title-field" value=
-// "${response.title.raw}">
-// <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true">Edit</i></span>
-//<span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i>Delete</span>
-// <textarea readonly class="note-body-field">${response.content.raw}</textarea>
-// <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-write" aria-hidden="true"></i>Save</span> 
-// </li>`).prependTo('#my-notes').hide().slideDown();
-
-// console.log("Congrats, you created a neqw note");
-//console.log(response);
-//},
-//we want to run this function if the request is not successful
-//error: (response) => {
-//console.log("Error");
-// console.log(response);
-//}
-//})
-// }
-//}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MyNotes);
 
 /*
