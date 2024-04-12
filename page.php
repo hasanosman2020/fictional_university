@@ -3,7 +3,7 @@ get_header();
 while (have_posts()){
     the_post();
     pageBanner(array(
-      'title' => 'Hello user, this is the title of the About Us page.',
+      'title' = > 'Hello user, this is the title of the About Us page.',
       'subtitle' => 'Hello again, this is the subtitle of the About Us page.',
       'photo' => 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?dpr=16auto=format&fit=crop&w=1500&h=1000&q=80&cs=tinysrgb&crop=' 
     ));
