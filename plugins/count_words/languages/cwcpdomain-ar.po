@@ -1,0 +1,33 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Count Words and Characters\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-04-16 01:30+0000\n"
+"PO-Revision-Date: 2024-04-16 01:33+0000\n"
+"Last-Translator: Hasan Osman\n"
+"Language-Team: Arabic\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100 >= 3 "
+"&& n%100<=10 ? 3 : n%100 >= 11 && n%100<=99 ? 4 : 5;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.7; wp-6.5.2\n"
+"X-Domain: cwcpdomain"
+
+#. Name of the plugin
+#: count_words_plugin.php:103
+msgid "Count Words and Characters"
+msgstr ""
+
+#. Author of the plugin
+msgid "Hasan Osman"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"This Word Count plugin will count the number of words and the number of "
+"characters in a post. It will also calculate the approximate reading time of "
+"the post, based on the average reading speed of 225 words per minute."
+msgstr ""

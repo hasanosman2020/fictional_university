@@ -5,6 +5,8 @@ Description: This Word Count plugin will count the number of words and the numbe
 Version: 1.0
 Author: Hasan Osman
 Website: https://github/hasanosman2020.com
+Text Domain: cwcpdomain
+Domain Path: /languages
 */
 
 class CountWordsandCharactersPlugin{
@@ -12,6 +14,10 @@ class CountWordsandCharactersPlugin{
         add_action('admin_menu', array($this,'adminPage'));
         add_action('admin_init', array($this, 'settings'));
         add_filter('the_content', array($this, 'ifWrap'));
+        add_action('init', array($this, 'languages'));
+    }
+    function languages(){
+        load_plugin_textdomain('cwcpdomain', false, dirname(plugin_basename(__FILE__)).'/languages');
     }
     function ifWrap($content){
         if(is_main_query() AND is_single() AND 
@@ -25,7 +31,7 @@ class CountWordsandCharactersPlugin{
         return $content;
     }
     function createHTML($content){
-        $html = '<h5>'.esc_html(get_option('cwcp_headline', 'Blog Post Statistics')).'</h5><p>';
+        $html = '<h5>'.esc_html(get_option('cwcp_headline', 'Blog Post Statistics')).';</h5><p>';
 
         //get word count
         if(get_option('cwcp_countwords', '1') OR
@@ -36,8 +42,8 @@ class CountWordsandCharactersPlugin{
             $html .= 'This post has '. $countWords .' words.<br />';
         }
         if(get_option('cwcp_countchars', '1')){
-            $html .= 'This post has '. strlen(strip_tags($content)) . ' characters.<br />';
-        }
+            $html .= 'esc_html__("This post has ", "cwcpdomain").strlen(strip_tags($content)). __("characters.", "cwcpdomain")<br />';
+        };
         if(get_option('cwcp_readtime', '1')){
             $html .= 'This post will take approximately '. round($countWords/225) . ' minute(s) to read.<br />';
         }
@@ -94,7 +100,7 @@ function locationHTML(){ ?>
 }
 
     function adminPage(){
-        add_options_page('Count Words and Characters Settings', 'Count Words and Characters', 'manage_options', 'count_words_settings_page', array($this, 'countWordsSettingsPage'));
+        add_options_page('Count Words and Characters Settings', __('Count Words and Characters', 'cwcpdomain'), 'manage_options', 'count_words_settings_page', array($this, 'countWordsSettingsPage'));
     }
     function countWordsSettingsPage(){ ?>
     <div class="wrap">
