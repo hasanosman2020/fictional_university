@@ -24,17 +24,32 @@ class WordFilterPlugin{
     }
     function subMenuOptions(){ ?>
     <h2>Word Filter Options</h2>
-
 <?php }
+
+function handleForm(){
+    if(wp_verify_nonce($_POST['theFilterNonce'], 'saveFilterWords') AND current_user_can('manage_options')){
+    update_option('pluginwordstofilter', sanitize_text_field($_POST['plugin_wordfilter'])); ?>
+    <div class="updated">
+        <p>Your filtered words have been saved.</p>
+    </div>
+<?php } else { ?>
+<div class="error">
+    <p>Sorry, you do not have permission to perform that action.</p>
+</div>
+<?php }}
     function wordFilterPage(){ ?>
     <div class="wrap">
         <h1>Word Filter</h1>
+        <?php if ($_POST["justsubmitted"] == true) $this->handleForm();
+             ?>
         <form method="POST">
+            <input type="hidden" name="justsubmitted" class="justsubmitted" value=true>
+           <?php wp_nonce_field('saveFilterWords', 'theFilterNonce'); ?>
             <label for="plugin_wordfilter">
                 <p>Enter a <strong>comma-separated</strong> list of words to filter from your site content.</p>
             </label>
             <div class="word-filter_flex-container">
-                <textarea name="plugin_wordfilter" id="plugin_wordfilter" placeholder="bad, moody, horrible, ugly etc..."></textarea>
+                <textarea name="plugin_wordfilter" id="plugin_wordfilter" placeholder="bad, moody, horrible, ugly etc..."><?php echo esc_textarea(get_option('plugin_wordfilter')); ?></textarea>
             </div>
             <input type="submit" name="submit" id="submit" class="button button_primary" value="Save Changes">
         </form>
