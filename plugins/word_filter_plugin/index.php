@@ -19,7 +19,7 @@ add_action('admin_init', array($this, 'registerSettings'));
 function registerSettings(){
     add_settings_section('replacement_text_section', 'Replacement Text', null, 'wordfilteroptions' );
     register_setting('replacementFields', 'replacementText');
-    add_settings_field('replacement-text', 'Filtered Words Replacement Text', array($this, 'replacementFieldHtml','wordfilteroptions', 'replacement_text_section' ));
+    add_settings_field('replacement-text', 'Filtered Words Replacement Text', array($this, 'replacementFieldHtml'),'wordfilteroptions', 'replacement_text_section' );
 }
 function replacementFieldHtml(){ ?>
 <input type="text" name="replacementText" id="replacementText" value="<?php echo esc_attr(get_option('replacementText', '****')) ?>" />
