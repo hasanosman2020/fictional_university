@@ -4,8 +4,13 @@ wp.blocks.registerBlockType('ourplugin/are-you-paying-attention', {
     icon: 'smiley',
     category: 'common',
     edit: function () {
-        wp.element.createElement("h3", null, "Hello from the editor - this is h3!");
-
+        //wp.element.createElement("h3", null, "Hello from the editor - this is h3!");
+        return (
+            <div>
+                <p>Hello - this is a paragraph from JSX.</p>
+                <h2>Hello there - this is h2 from JSK.</h2>
+            </div>
+        )
         
     },
     save: function () {
