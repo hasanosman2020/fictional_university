@@ -95,12 +95,42 @@ wp.blocks.registerBlockType('ourplugin/are-you-paying-attention', {
   title: 'Are You Paying Attention?',
   icon: 'smiley',
   category: 'common',
-  edit: function () {
-    //wp.element.createElement("h3", null, "Hello from the editor - this is h3!");
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Hello - this is a paragraph from JSX."), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, "Hello there - this is h2 from JSK."));
+  attributes: {
+    skyColour: {
+      type: "string"
+    },
+    grassColour: {
+      type: "string"
+    }
   },
-  save: function () {
-    wp.element.createElement("h1", null, "Hello from the frontend - this is h1!");
+  edit: function ($props) {
+    //wp.element.createElement("h3", null, "Hello from the editor - this is h3!");
+    function updateSkyColour($event) {
+      $props.setAttribute({
+        skyColour: $event.target.value
+      });
+      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+        type: "text",
+        placeholder: "sky colour",
+        value: $props.attributes.skyColour,
+        onChange: updateSkyColour
+      }));
+    }
+    function updateGrassColour($event) {
+      props.setAttribute({
+        grassColour: $event.target.value
+      });
+      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+        type: "text",
+        placeholder: "grass colour",
+        value: $props.attributes.grassColour,
+        onChange: updateGrassColour
+      }));
+    }
+  },
+  save: function ($props) {
+    //wp.element.createElement("h1", null, "Hello from the frontend - this is h1!");
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Today the sky is ", $props.attributes.skyColour, " and the grass is ", $props.attributes.grassColour, ".");
   }
 });
 })();
