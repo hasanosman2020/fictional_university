@@ -103,36 +103,39 @@ wp.blocks.registerBlockType('ourplugin/are-you-paying-attention', {
       type: "string"
     }
   },
-  edit: function ($props) {
-    //wp.element.createElement("h3", null, "Hello from the editor - this is h3!");
-    function updateSkyColour($event) {
-      $props.setAttribute({
-        skyColour: $event.target.value
-      });
-      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
-        type: "text",
-        placeholder: "sky colour",
-        value: $props.attributes.skyColour,
-        onChange: updateSkyColour
-      }));
-    }
-    function updateGrassColour($event) {
-      props.setAttribute({
-        grassColour: $event.target.value
-      });
-      return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
-        type: "text",
-        placeholder: "grass colour",
-        value: $props.attributes.grassColour,
-        onChange: updateGrassColour
-      }));
-    }
-  },
+  edit: EditComponents,
   save: function ($props) {
     //wp.element.createElement("h1", null, "Hello from the frontend - this is h1!");
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, "Today the sky is ", $props.attributes.skyColour, " and the grass is ", $props.attributes.grassColour, ".");
+    return null; /*( {
+                 <p>Today the sky is {$props.attributes.skyColour} and the grass is {$props.attributes.grassColour}.</p>*/
   }
 });
+function EditComponents(props) {
+  //function(props) {
+  //wp.element.createElement("h3", null, "Hello from the editor - this is h3!");
+  function updateSkyColour(event) {
+    $props.setAttribute({
+      skyColour: $event.target.value
+    });
+  }
+  ;
+  function updateGrassColour($event) {
+    props.setAttribute({
+      grassColour: $event.target.value
+    });
+  }
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    placeholder: "sky colour",
+    value: $props.attributes.skyColour,
+    onChange: updateSkyColour
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+    type: "text",
+    placeholder: "grass colour",
+    value: $props.attributes.grassColour,
+    onChange: updateGrassColour
+  }));
+}
 })();
 
 /******/ })()
