@@ -1,7 +1,7 @@
 {
   "name": "are-you-paying-attention",
   "version": "1.0.0",
-  "main": "test.js",
+  "main": "index.js",
   "scripts": {
     "build": "wp-scripts build",
     "start": "wp-scripts start",

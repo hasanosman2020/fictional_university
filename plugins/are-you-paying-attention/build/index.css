@@ -7,5 +7,24 @@
   border: 1px solid #b3d9ee;
   background-color: #d9e0e8;
 }
+.paying-attention-edit-block .mark-as-correct {
+  color: #c1ad41;
+  cursor: pointer;
+  position: relative;
+  top: -3px;
+  transition: transform 0.3s ease-out;
+}
+.paying-attention-edit-block .mark-as-correct:hover {
+  color: #9f8806;
+  transform: scale(1.25) rotate(12deg);
+}
+.paying-attention-edit-block .attention-delete {
+  color: #ff0000;
+  position: relative;
+  top: -5px;
+}
+.paying-attention-edit-block .attention-delete:hover {
+  color: #c20000;
+}
 
 /*# sourceMappingURL=index.css.map*/

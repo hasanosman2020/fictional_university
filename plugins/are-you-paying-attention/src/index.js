@@ -7,8 +7,8 @@ wp.blocks.registerBlockType('ourplugin/are-you-paying-attention', {
     icon: 'smiley',
     category: 'common',
     attributes: {
-        skyColour: { type: "string" },
-        grassColour: {type: "string"}
+        question: { type: "string" },
+        answers: {type: "array", default: ["red", "blue", "green"]}
     },
     edit: EditComponents,
     save: function (props) {
@@ -22,29 +22,55 @@ wp.blocks.registerBlockType('ourplugin/are-you-paying-attention', {
 function EditComponents(props) {
     //function(props) {
         //wp.element.createElement("h3", null, "Hello from the editor - this is h3!");
-        function updateSkyColour(event) {
-            props.setAttribute({ skyColour: event.target.value })
+        //function updateSkyColour(event) {
+            //props.setAttribute({ skyColour: event.target.value })
+    //}
+    //function updateGrassColour(event) {
+        //props.setAttribute({ grassColour: event.target.value })
+    //}
+
+    function updateQuestion(value) {
+        props.setAttributes({question: value})
     }
-    function updateGrassColour(event) {
-        props.setAttribute({ grassColour: event.target.value })
+    function deleteAnswer(indexToDelete) {
+        return function () {
+            const newAnswers = props.attributes.answers.filter(function (x, index) {
+                return index !== indexToDelete;
+            });
+        
+            props.setAttributes({ answers: newAnswers });
+        }
     }
             return (
                 <div className="paying-attention-edit-block">
-                    <TextControl label="Question" />
-                    <p>Answers:</p>
-                    <Flex>
-                        <FlexBlock>
-                            <TextControl />
-                        </FlexBlock>
-                        <FlexItem>
-                            <Button>
-                                <Icon icon="star-empty" />
-                            </Button>
-                        </FlexItem>
-                        <FlexItem>
-                            <Button>DELETE</Button>
-                        </FlexItem>
-                    </Flex>
+                    <TextControl label="Question" value={props.attributes.question} onChange={updateQuestion} style={{ fontSize: "20px" }} />
+                    <p style={{ fontSize: "13px", margin: "20px 0 8px 0" }}>Answers:</p>
+                    
+                    {props.attributes.answers.map(function (answer, index) {
+                    
+                        return (
+                            <Flex>
+                                <FlexBlock>
+                                    <TextControl value={answer} onChange={newValue => {
+                                        const newAnswers = props.attributes.answers.concat([]);
+                                        newAnswers[index] = newValue;
+                                        props.setAttributes({ answers: newAnswers });
+                                    }} />
+                                </FlexBlock>
+                                <FlexItem>
+                                    <Button>
+                                        <Icon icon="star-empty" className="mark-as-correct" />
+                                    </Button>
+                                </FlexItem>
+                                <FlexItem>
+                                    <Button link className="attention-delete" onClick={deleteAnswer(index)}>DELETE</Button>
+                                </FlexItem>
+                            </Flex>
+                        );
+                    })}
+                    <Button primary onClick={() => {
+                        props.setAttributes({answers: props.attributes.answers.concat([""])})
+                    }}>Add Another Answer</Button>
                 </div>
             
                 
