@@ -117,6 +117,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+(function () {
+  let locked = false;
+  wp.data.subscribe(function () {
+    const results = wp.data.select("core/block-editor").getBlocks().filter(function (block) {
+      return block.name == "ourplugin/are-you-paying-attention" && block.attributes.correctAnswer == undefined;
+    });
+    if (results.length && locked == false) {
+      locked = true;
+      wp.data.dispatch("core/editor").lockPostSaving("noanswer");
+    }
+    if (!results.length && locked) {
+      locked = false;
+      wp.data.dispatch("core/editor").unlockPostSaving("noanswer");
+    }
+  });
+})();
 
 //alert ("Hello from test.js!");
 wp.blocks.registerBlockType('ourplugin/are-you-paying-attention', {
@@ -129,7 +145,11 @@ wp.blocks.registerBlockType('ourplugin/are-you-paying-attention', {
     },
     answers: {
       type: "array",
-      default: ["red", "blue", "green"]
+      default: [""]
+    },
+    correctAnswer: {
+      type: "number",
+      default: undefined
     }
   },
   edit: EditComponents,
@@ -155,24 +175,29 @@ function EditComponents(props) {
     });
   }
   function deleteAnswer(indexToDelete) {
-    return function () {
-      const newAnswers = props.attributes.answers.filter(function (x, index) {
-        return index !== indexToDelete;
-      });
+    const newAnswers = props.attributes.answers.filter(function (x, index) {
+      return index !== indexToDelete;
+    });
+    props.setAttributes({
+      answers: newAnswers
+    });
+    if (indexToDelete == props.attributes.correctAnswer) {
       props.setAttributes({
-        answers: newAnswers
+        correctAnswer: undefined
       });
-    };
+    }
+  }
+  function markAsCorrect(index) {
+    props.setAttributes({
+      correctAnswer: index
+    });
   }
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "paying-attention-edit-block"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
     label: "Question",
     value: props.attributes.question,
-    onChange: updateQuestion,
-    style: {
-      fontSize: "20px"
-    }
+    onChange: updateQuestion
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: {
       fontSize: "13px",
@@ -188,13 +213,15 @@ function EditComponents(props) {
           answers: newAnswers
         });
       }
-    })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.FlexItem, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Icon, {
-      icon: "star-empty",
-      className: "mark-as-correct"
+    })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.FlexItem, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+      onClick: () => markAsCorrect(index)
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Icon, {
+      className: "mark-as-correct",
+      icon: props.attributes.correctAnswer == index ? "star-filled" : "star-empty"
     }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.FlexItem, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
       link: true,
       className: "attention-delete",
-      onClick: deleteAnswer(index)
+      onClick: () => deleteAnswer(index)
     }, "DELETE")));
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
     primary: true,
@@ -203,13 +230,7 @@ function EditComponents(props) {
         answers: props.attributes.answers.concat([""])
       });
     }
-  }, "Add Another Answer"))
-
-  /*<p>Hello - this is a paragraph from JSX.</p>
-              <h2>Hello there - this is h2 from JSK.</h2>
-                  <input type="text" placeholder="sky colour" value={$props.attributes.skyColour} onChange={updateSkyColour} />
-                  <input type="text" placeholder="grass colour" 
-          value={$props.attributes.grassColour} onChange={updateGrassColour} />*/;
+  }, "Add Another Answer"));
 }
 })();
 

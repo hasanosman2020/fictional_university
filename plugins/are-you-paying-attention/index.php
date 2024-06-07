@@ -22,6 +22,11 @@ function adminAssets(){
 }
 
 function theHTML($attributes){
+    if(!is_admin()){
+        wp_enqueue_script('attentionFrontend', plugin_dir_url(__FILE__).'build/frontend.js', array('wp-element'));
+    wp_enqueue_style('attentionFrontendCSS', plugin_dir_url(__FILE__).'build/frontend.css');
+    }
+    
     ob_start(); ?>
     <h3>Today the sky is <?php echo esc_html($attributes['skyColour']) ?> and the grass is <?php echo esc_html($attributes['grassColour']) ?></h3>
     <?php return ob_get_clean();
